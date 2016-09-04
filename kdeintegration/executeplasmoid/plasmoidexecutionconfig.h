@@ -54,12 +54,12 @@ class PlasmoidLauncher : public KDevelop::ILauncher
 public:
     PlasmoidLauncher( ExecutePlasmoidPlugin* plugin );
     virtual QList< KDevelop::LaunchConfigurationPageFactory* > configPages() const;
-    virtual QString description() const;
-    virtual QString id();
-    virtual QString name() const;
+    const QString& description() const;
+    const QString& id() const;
+    const QString& name() const;
     virtual KJob* start(const QString& launchMode, KDevelop::ILaunchConfiguration* cfg);
     virtual KJob* dependencies(KDevelop::ILaunchConfiguration* cfg);
-    virtual QStringList supportedModes() const;
+    const QStringList& supportedModes() const;
     
     static KJob* calculateDependencies(KDevelop::ILaunchConfiguration* cfg);
 private:

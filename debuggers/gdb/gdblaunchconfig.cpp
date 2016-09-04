@@ -127,14 +127,16 @@ QList< KDevelop::LaunchConfigurationPageFactory* > GdbLauncher::configPages() co
     return factoryList;
 }
 
-QString GdbLauncher::id()
+const QString& GdbLauncher::id() const
 {
-    return "gdb";
+    static QString idstr("gdb");
+    return idstr;
 }
 
-QString GdbLauncher::name() const
+const QString& GdbLauncher::name() const
 {
-    return i18n("GDB");
+    static QString namestr(i18n("GDB"));
+    return namestr;
 }
 
 KJob* GdbLauncher::start(const QString& launchMode, KDevelop::ILaunchConfiguration* cfg)
@@ -161,14 +163,16 @@ KJob* GdbLauncher::start(const QString& launchMode, KDevelop::ILaunchConfigurati
     return 0;
 }
 
-QStringList GdbLauncher::supportedModes() const
+const QStringList& GdbLauncher::supportedModes() const
 {
-    return QStringList() << "debug";
+    static QStringList modes([]() { return QStringList() << "debug"; }());
+    return modes;
 }
 
-QString GdbLauncher::description() const
+const QString& GdbLauncher::description() const
 {
-    return i18n("Executes a Native application in GDB");
+    static QString descr(i18n("Executes a Native application in GDB"));
+    return descr;
 }
 
 KDevelop::LaunchConfigurationPage* GdbConfigPageFactory::createWidget( QWidget* parent )

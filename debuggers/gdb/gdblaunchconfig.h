@@ -70,11 +70,11 @@ class GdbLauncher : public KDevelop::ILauncher
 public:
     GdbLauncher( GDBDebugger::CppDebuggerPlugin* plugin, IExecutePlugin* execute );
     virtual QList< KDevelop::LaunchConfigurationPageFactory* > configPages() const;
-    virtual QString description() const;
-    virtual QString id();
-    virtual QString name() const;
+    const QString& description() const override;
+    const QString& id() const;
+    const QString& name() const;
     virtual KJob* start(const QString& launchMode, KDevelop::ILaunchConfiguration* cfg);
-    virtual QStringList supportedModes() const;
+    const QStringList& supportedModes() const override;
 private:
     QList<KDevelop::LaunchConfigurationPageFactory*> factoryList;
     GDBDebugger::CppDebuggerPlugin* m_plugin;

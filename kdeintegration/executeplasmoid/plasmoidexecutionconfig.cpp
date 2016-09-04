@@ -161,19 +161,22 @@ QList< KDevelop::LaunchConfigurationPageFactory* > PlasmoidLauncher::configPages
     return QList<KDevelop::LaunchConfigurationPageFactory*>();
 }
 
-QString PlasmoidLauncher::description() const
+const QString& PlasmoidLauncher::description() const
 {
-    return i18n("Display a plasmoid");
+    static QString descr(i18n("Display a plasmoid"));
+    return descr;
 }
 
-QString PlasmoidLauncher::id()
+const QString& PlasmoidLauncher::id() const
 {
-    return "PlasmoidLauncher";
+    static QString idstr("PlasmoidLauncher");
+    return idstr;
 }
 
-QString PlasmoidLauncher::name() const
+const QString& PlasmoidLauncher::name() const
 {
-    return i18n("Plasmoid Launcher");
+    static QString namestr(i18n("Plasmoid Launcher"));
+    return namestr;
 }
 
 PlasmoidLauncher::PlasmoidLauncher(ExecutePlasmoidPlugin* plugin)
@@ -237,9 +240,10 @@ KJob* PlasmoidLauncher::dependencies(KDevelop::ILaunchConfiguration* cfg)
 }
 
 
-QStringList PlasmoidLauncher::supportedModes() const
+const QStringList& PlasmoidLauncher::supportedModes() const
 {
-    return QStringList() << "execute";
+    static QStringList modes([]() { return QStringList() << "execute"; }());
+    return modes;
 }
 
 KDevelop::LaunchConfigurationPage* PlasmoidPageFactory::createWidget(QWidget* parent)
