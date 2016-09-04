@@ -61,8 +61,9 @@ CTestRunJob::CTestRunJob(CTestSuite* suite, const QStringList& cases, OutputJob:
 
 KJob* createTestJob(QString launchModeId, QStringList arguments )
 {
-    LaunchConfigurationType* type = ICore::self()->runController()->launchConfigurationTypeForId( "Native Application" );
-    ILaunchMode* mode = ICore::self()->runController()->launchModeForId( launchModeId );
+    IRunController* runcontroller = ICore::self()->runController();
+    LaunchConfigurationType* type = runcontroller->launchConfigurationTypeForId( "Native Application" );
+    ILaunchMode* mode = runcontroller->launchModeForId( launchModeId );
 
     kDebug() << "got mode and type:" << type << type->id() << mode << mode->id();
     Q_ASSERT(type && mode);
@@ -79,7 +80,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
     Q_ASSERT(launcher);
 
     ILaunchConfiguration* ilaunch = 0;
-    QList<ILaunchConfiguration*> launchConfigurations = ICore::self()->runController()->launchConfigurations();
+    QList<ILaunchConfiguration*> launchConfigurations = runcontroller->launchConfigurations();
     foreach (ILaunchConfiguration *l, launchConfigurations) {
         if (l->type() == type && l->config().readEntry("ConfiguredByCTest", false)) {
             ilaunch = l;
@@ -87,7 +88,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
         }
     }
     if (!ilaunch) {
-        ilaunch = ICore::self()->runController()->createLaunchConfiguration( type,
+        ilaunch = runcontroller->createLaunchConfiguration( type,
                                                 qMakePair( mode->id(), launcher->id() ),
                                                 0, //TODO add project
                                                 i18n("CTest") );
@@ -97,7 +98,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
         //kDebug() << "reusing generated config, launching";
     }
     type->configureLaunchFromCmdLineArguments( ilaunch->config(), arguments );
-    return ICore::self()->runController()->execute(launchModeId, ilaunch);
+    return runcontroller->execute(launchModeId, ilaunch);
 }
 
 void CTestRunJob::start()
@@ -120,21 +121,24 @@ void CTestRunJob::start()
     arguments.prepend(m_suite->executable().toLocalFile());
     m_job = createTestJob("execute", arguments);
 
-    if (ExecuteCompositeJob* cjob = qobject_cast<ExecuteCompositeJob*>(m_job)) {
-        m_outputJob = qobject_cast<OutputJob*>(cjob->subjobs().last());
-        Q_ASSERT(m_outputJob);
-        m_outputJob->setVerbosity(m_verbosity);
+    if (ExecuteCompositeJob* cjob = dynamic_cast<ExecuteCompositeJob*>(m_job)) {
+        if (!cjob->subjobs().empty())
+        {
+            m_outputJob = dynamic_cast<OutputJob*>(cjob->subjobs().last());
+            Q_ASSERT(m_outputJob);
+            m_outputJob->setVerbosity(m_verbosity);
 
-        QString testName = arguments.value(0).split('/').last();
-        QString title;
-        if (cases_selected.count() == 1)
-            title = i18nc("running test %1, %2 test case", "CTest %1: %2", testName, cases_selected.value(0));
-        else
-            title = i18ncp("running test %1, %2 number of test cases", "CTest %2 (%1)", "CTest %2 (%1)", cases_selected.count(), testName);
+            QString testName = arguments.value(0).split('/').last();
+            QString title;
+            if (cases_selected.count() == 1)
+                title = i18nc("running test %1, %2 test case", "CTest %1: %2", testName, cases_selected.value(0));
+            else
+                title = i18ncp("running test %1, %2 number of test cases", "CTest %2 (%1)", "CTest %2 (%1)", cases_selected.count(), testName);
 
-        m_outputJob->setTitle(title);
+            m_outputJob->setTitle(title);
 
-        connect(m_outputJob->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
+            connect(m_outputJob->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
+        }
     }
     connect(m_job, SIGNAL(finished(KJob*)), SLOT(processFinished(KJob*)));
     
