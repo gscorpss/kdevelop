@@ -124,6 +124,8 @@ public:
     virtual QString name() const { return QString("Test-Launch"); }
     virtual KDevelop::IProject* project() const { return 0; }
     virtual KDevelop::LaunchConfigurationType* type() const { return 0; }
+    virtual const QString& launcherForMode(const QString& mode) const {static const QString s; return s;}
+
 private:
     KConfigGroup cfg;
     KConfig *c;
