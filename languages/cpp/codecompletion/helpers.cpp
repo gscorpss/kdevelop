@@ -338,7 +338,7 @@ AbstractType::Ptr effectiveType( const Declaration* decl )
   return decl->abstractType();
 }
 
-bool isSource(QString file) {
+bool isSource(const QString& file) {
   foreach(const QString& ext, CppUtils::sourceExtensions())
     if(file.endsWith(ext))
       return true;

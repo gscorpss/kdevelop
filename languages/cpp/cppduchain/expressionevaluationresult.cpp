@@ -24,6 +24,7 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/types/identifiedtype.h>
 #include <language/duchain/types/delayedtype.h>
+#include <language/duchain/declaration.h>
 
 namespace Cpp {
 
@@ -95,6 +96,19 @@ ExpressionEvaluationResult& ExpressionEvaluationResult::operator=(const Expressi
   isInstance = rhs.isInstance;
   instanceDeclaration = rhs.instanceDeclaration;
   return *this;
+}
+void ExpressionEvaluationResult::appendDeclarations(const QList<DeclarationPointer>& _declarations)
+{
+  foreach(const DeclarationPointer &decl, _declarations)
+    if(decl)
+      allDeclarations.append(decl->id());
+}
+
+void ExpressionEvaluationResult::appendDeclarations(const QList<Declaration*>& _declarations)
+{
+  foreach(const Declaration* decl, _declarations)
+    if(decl)
+      allDeclarations.append(decl->id());
 }
 
 }

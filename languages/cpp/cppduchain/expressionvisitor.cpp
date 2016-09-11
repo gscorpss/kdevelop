@@ -178,7 +178,7 @@ ExpressionVisitor::ExpressionVisitor(ParseSession* session, const KDevelop::TopD
 ExpressionVisitor::~ExpressionVisitor() {
 }
 
-QList<DeclarationPointer> ExpressionVisitor::lastDeclarations() const {
+const QList<DeclarationPointer>& ExpressionVisitor::lastDeclarations() const {
   return m_lastDeclarations;
 }
 

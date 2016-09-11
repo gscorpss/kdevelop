@@ -45,7 +45,7 @@ void createTemplateArgumentList(const NormalDeclarationCompletionItem& item, QSt
 KDevelop::AbstractType::Ptr effectiveType( const KDevelop::Declaration* decl );
 
 ///Returns true if the given file has the extension of a C++ source file, not of a header.
-bool isSource(QString fileName);
+bool isSource(const QString& fileName);
 
 }
 

@@ -126,7 +126,7 @@ namespace Cpp {
        * and maybe do automatic correction.
        * @return the type of the container that should be completed in.
        * */
-      ExpressionEvaluationResult memberAccessContainer() const;
+      const ExpressionEvaluationResult& memberAccessContainer() const;
 
       /**
        * Returns the internal context of memberAccessContainer, if any.
@@ -148,16 +148,16 @@ namespace Cpp {
       const FunctionList& functions() const;
 
       /// @return of the function name for this context. Also works for operators.
-      QString functionName() const;
+      const QString& functionName() const;
 
       /**
        * When memberAccessOperation is IncludeListAccess, then this contains all the files to be listed.
       * */
-      QList<KDevelop::IncludeItem> includeItems() const;
+      const QList<Cpp::IncludeItem>& includeItems() const;
 
       int pointerConversions() const;
       
-      QString followingText() const;
+      const QString& followingText() const;
       
       void setFollowingText(QString str);
       

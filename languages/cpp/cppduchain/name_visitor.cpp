@@ -167,9 +167,8 @@ ExpressionEvaluationResult NameASTVisitor::processTemplateArgument(TemplateArgum
       LOCKDUCHAIN;
       
       res.type = IndexedType(m_visitor->lastType());
-      foreach(const DeclarationPointer &decl, m_visitor->lastDeclarations())
-        if(decl)
-          res.allDeclarationsList().append(decl->id());
+
+      res.appendDeclarations(m_visitor->lastDeclarations());
 
       res.isInstance = m_visitor->lastInstance().isInstance;
       if(m_visitor->lastInstance().declaration)
@@ -201,9 +200,7 @@ ExpressionEvaluationResult NameASTVisitor::processTemplateArgument(TemplateArgum
     
     if( res.type ) {
       LOCKDUCHAIN;
-      foreach(const DeclarationPointer &decl, v.declarations())
-        if(decl)
-          res.allDeclarationsList().append(decl->id());
+      res.appendDeclarations(v.declarations());
       
       m_find.openQualifiedIdentifier(res);
       opened = true;

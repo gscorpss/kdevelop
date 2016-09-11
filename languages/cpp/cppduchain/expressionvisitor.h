@@ -97,7 +97,7 @@ class KDEVCPPDUCHAIN_EXPORT ExpressionVisitor : public DefaultVisitor {
     QList<ProblemPointer> realProblems() const;
     
     ///Returns the last queried list of declarations
-    QList<DeclarationPointer> lastDeclarations() const;
+    const QList<DeclarationPointer>& lastDeclarations() const;
   protected:
     /**
      * Will be called for each relevant sub-node with the resolved type of that expression. This is not guaranteed to be called.

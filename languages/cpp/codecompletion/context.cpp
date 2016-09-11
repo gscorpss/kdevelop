@@ -564,8 +564,7 @@ void CodeCompletionContext::processArrowMemberAccess() {
   }
 
   // TODO use Cpp::isAccessible on operator functions for more correctness?
-  foreach( Declaration* decl, operatorDeclarations )
-    m_expressionResult.allDeclarationsList().append( decl->id() );
+  m_expressionResult.appendDeclarations(operatorDeclarations);
 
   bool declarationIsConst = ( containerType->modifiers() & AbstractType::ConstModifier ) ||
                             ( idDecl->abstractType()->modifiers() & AbstractType::ConstModifier );
@@ -1141,15 +1140,15 @@ const CodeCompletionContext::FunctionList& CodeCompletionContext::functions() co
   return m_matchingFunctionOverloads;
 }
 
-QString CodeCompletionContext::functionName() const {
+const QString& CodeCompletionContext::functionName() const {
   return m_functionName;
 }
 
-QList<Cpp::IncludeItem> CodeCompletionContext::includeItems() const {
+const QList<Cpp::IncludeItem>& CodeCompletionContext::includeItems() const {
   return m_includeItems;
 }
 
-ExpressionEvaluationResult CodeCompletionContext::memberAccessContainer() const {
+const ExpressionEvaluationResult& CodeCompletionContext::memberAccessContainer() const {
   return m_expressionResult;
 }
 
@@ -1578,7 +1577,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::includeListAccessComplet
 {
   QList<CompletionTreeItemPointer> items;
 
-  QList<KDevelop::IncludeItem> allIncludeItems = includeItems();
+  const QList<KDevelop::IncludeItem>& allIncludeItems = includeItems();
   foreach(const KDevelop::IncludeItem& includeItem, allIncludeItems) {
     if (shouldAbort)
       return items;
@@ -2475,7 +2474,7 @@ QList< KSharedPtr< KDevelop::CompletionTreeItem > > CodeCompletionContext::keywo
   return ret;
 }
 
-QString CodeCompletionContext::followingText() const {
+const QString& CodeCompletionContext::followingText() const {
   return m_followingText;
 }
 

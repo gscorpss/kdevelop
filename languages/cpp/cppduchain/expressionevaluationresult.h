@@ -22,6 +22,7 @@
 #include <language/duchain/declarationid.h>
 #include <language/duchain/types/referencetype.h>
 #include <language/duchain/types/indexedtype.h>
+#include <language/duchain/duchainpointer.h>
 
 class QString;
 
@@ -51,10 +52,13 @@ class KDEVCPPDUCHAIN_EXPORT ExpressionEvaluationResult {
       return allDeclarations.size();
     }
     
-    QList<DeclarationId>& allDeclarationsList() {
+    const QList<DeclarationId>& allDeclarationsList() const {
       return allDeclarations;
     }
     
+    void appendDeclarations(const QList<DeclarationPointer>& _declarations);
+    void appendDeclarations(const QList<Declaration*>& _declarations);
+
     ///@return whether the result is an lvalue
     bool isLValue() const {
       return isInstance && (instanceDeclaration.isValid() || type.type<ReferenceType>());
