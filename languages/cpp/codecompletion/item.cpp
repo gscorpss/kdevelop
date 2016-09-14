@@ -793,12 +793,12 @@ void IncludeFileCompletionItem::execute(KTextEditor::Document* document, const K
   document->replaceText(word, newText);
 }
 
-void TypeConversionCompletionItem::setPrefix(QString s) {
+void TypeConversionCompletionItem::setPrefix(const QString& s) {
   m_prefix = s;
 }
 
-QList<KDevelop::IndexedType> TypeConversionCompletionItem::type() const {
-  return QList<KDevelop::IndexedType>() << m_type;
+const KDevelop::IndexedType& TypeConversionCompletionItem::type() const {
+  return m_type;
 }
 
 void TypeConversionCompletionItem::execute(KTextEditor::Document* document, const KTextEditor::Range& word) {

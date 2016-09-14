@@ -75,7 +75,7 @@ MemoryPool::~MemoryPool()
     if (cache->freeBlocks.size() < MAX_CACHE_SIZE) {
       // cache block for reuse by another thread local allocator
       // this requires a 'prestine' state, i.e. memset to zero
-      memset(block->data, 0, i == m_currentBlock ? m_currentIndex : static_cast<size_t>(BLOCK_SIZE));
+//      memset(block->data, 0, i == m_currentBlock ? m_currentIndex : static_cast<size_t>(BLOCK_SIZE));
       cache->freeBlocks.append(block);
     } else {
       // otherwise we can discard this block
@@ -95,7 +95,7 @@ void MemoryPool::allocateBlock()
   } else {
     // allocate new memory block
     Block* block = new Block;
-    memset(block->data, 0, BLOCK_SIZE);
+//    memset(block->data, 0, BLOCK_SIZE);
     m_blocks.append(block);
   }
 }

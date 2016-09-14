@@ -33,8 +33,8 @@ public:
   ClassCompiler(ParseSession* session);
   virtual ~ClassCompiler();
 
-  inline QString name() const { return _M_name; }
-  inline QStringList baseClasses() const { return _M_base_classes; }
+//   inline const QString& name() const { return _M_name; }
+//   inline const QStringList& baseClasses() const { return _M_base_classes; }
 
   void run(ClassSpecifierAST *node);
 

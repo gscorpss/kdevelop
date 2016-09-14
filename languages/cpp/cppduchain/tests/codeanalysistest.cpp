@@ -160,14 +160,14 @@ class ControlFlowToDot
       QList<ControlFlowNode*> n=graph->rootNodes();
       for(QList<ControlFlowNode*>::const_iterator it=n.constBegin(), itEnd=n.constEnd(); it!=itEnd; ++it, ++i) {
         *m_dev << "  subgraph cluster_" << i << "  {\n\tcolor=black;\n";
-        Declaration* d=declarationForNode(graph, *it);
+        Declaration* d = graph->declarationForNode(*it);
         if(d)
           *m_dev << "\tlabel=\""+d->toString()+"\"\n";
         r &= exportNode(*it);
         *m_dev << "  }\n";
       }
       
-      QVector< ControlFlowNode* > deadNodes = graph->deadNodes();
+      const QVector< ControlFlowNode* >& deadNodes = graph->deadNodes();
       if(!deadNodes.isEmpty()) {
         *m_dev << "  subgraph cluster_"<< i <<"  {\n";
         *m_dev << "\tlabel = \"Dead Nodes\";\n";
@@ -180,14 +180,6 @@ class ControlFlowToDot
       *m_dev << "}\n";
       
       return r;
-    }
-    
-    Declaration* declarationForNode(const ControlFlowGraph* graph, const ControlFlowNode* node) const {
-      foreach(Declaration* d, graph->declarations()) {
-        if(graph->nodeForDeclaration(d)==node)
-          return d;
-      }
-      return 0;
     }
     
 private:

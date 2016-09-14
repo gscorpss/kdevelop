@@ -149,8 +149,8 @@ class TypeConversionCompletionItem : public KDevelop::CompletionTreeItem {
     TypeConversionCompletionItem(QString text, KDevelop::IndexedType type, int argumentHintDepth, KSharedPtr<Cpp::CodeCompletionContext> completionContext);
     virtual int argumentHintDepth() const;
     virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
-    QList<KDevelop::IndexedType> type() const;
-    void setPrefix(QString s);
+    const KDevelop::IndexedType& type() const;
+    void setPrefix(const QString& s);
     virtual void execute(KTextEditor::Document* document, const KTextEditor::Range& word);
   private:
     QString m_prefix;

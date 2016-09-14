@@ -220,7 +220,7 @@ public:
       Kind_AliasDeclaration,                    // 88
       NODE_KIND_COUNT
     };
-
+  AST() :kind(0), start_token(0), end_token(0), ducontext(nullptr) {}
   int kind;
 
   uint start_token;
@@ -767,7 +767,7 @@ public:
 class LinkageBodyAST : public AST
 {
 public:
-
+  LinkageBodyAST() :declarations(nullptr){}
   DECLARE_AST_NODE(LinkageBody)
 
   const ListNode<DeclarationAST*> *declarations;
@@ -826,8 +826,8 @@ public:
 
   DECLARE_AST_NODE(NamespaceAliasDefinition)
 
-  uint namespace_name;
-  NameAST *alias_name;
+  uint namespace_name = 0;
+  NameAST *alias_name = nullptr;
 };
 
 class NewDeclaratorAST : public AST
@@ -836,9 +836,9 @@ public:
 
   DECLARE_AST_NODE(NewDeclarator)
 
-  PtrOperatorAST *ptr_op;
-  NewDeclaratorAST *sub_declarator;
-  const ListNode<ExpressionAST*> *expressions;
+  PtrOperatorAST *ptr_op  = nullptr;
+  NewDeclaratorAST *sub_declarator  = nullptr;
+  const ListNode<ExpressionAST*> *expressions = nullptr;
 };
 
 class NewExpressionAST : public ExpressionAST
@@ -847,12 +847,12 @@ public:
 
   DECLARE_AST_NODE(NewExpression)
 
-  uint scope_token;
-  uint new_token;
-  ExpressionAST *expression;
-  TypeIdAST *type_id;
-  NewTypeIdAST *new_type_id;
-  NewInitializerAST *new_initializer;
+  uint scope_token = 0;
+  uint new_token = 0;
+  ExpressionAST *expression = nullptr;
+  TypeIdAST *type_id = nullptr;
+  NewTypeIdAST *new_type_id = nullptr;
+  NewInitializerAST *new_initializer = nullptr;
 };
 
 class NewInitializerAST : public AST
@@ -861,7 +861,7 @@ public:
 
   DECLARE_AST_NODE(NewInitializer)
 
-  ExpressionAST *expression;
+  ExpressionAST *expression = nullptr;
 };
 
 class NewTypeIdAST : public AST
@@ -870,9 +870,9 @@ public:
 
   DECLARE_AST_NODE(NewTypeId)
 
-  TypeSpecifierAST *type_specifier;
-  NewInitializerAST *new_initializer;
-  NewDeclaratorAST *new_declarator;
+  TypeSpecifierAST *type_specifier = nullptr;
+  NewInitializerAST *new_initializer = nullptr;
+  NewDeclaratorAST *new_declarator = nullptr;
 };
 
 class OperatorAST : public AST
@@ -881,9 +881,9 @@ public:
 
   DECLARE_AST_NODE(Operator)
 
-  uint op; //Index of the token that describes the operator
-  uint open;
-  uint close;
+  uint op = 0; //Index of the token that describes the operator
+  uint open = 0;
+  uint close = 0;
 };
 
 class OperatorFunctionIdAST : public AST
@@ -892,9 +892,9 @@ public:
 
   DECLARE_AST_NODE(OperatorFunctionId)
 
-  OperatorAST *op;
-  TypeSpecifierAST *type_specifier;
-  const ListNode<PtrOperatorAST*> *ptr_ops;
+  OperatorAST *op = nullptr;
+  TypeSpecifierAST *type_specifier = nullptr;
+  const ListNode<PtrOperatorAST*> *ptr_ops = nullptr;
 };
 
 class ParameterDeclarationAST : public AST
@@ -903,9 +903,9 @@ public:
 
   DECLARE_AST_NODE(ParameterDeclaration)
 
-  TypeSpecifierAST *type_specifier;
-  DeclaratorAST *declarator;
-  ExpressionAST *expression;
+  TypeSpecifierAST *type_specifier = nullptr;
+  DeclaratorAST *declarator = nullptr;
+  ExpressionAST *expression = nullptr;
 };
 
 class ParameterDeclarationClauseAST : public AST
@@ -914,8 +914,8 @@ public:
 
   DECLARE_AST_NODE(ParameterDeclarationClause)
 
-  const ListNode<ParameterDeclarationAST*> *parameter_declarations;
-  uint ellipsis;
+  const ListNode<ParameterDeclarationAST*> *parameter_declarations = nullptr;
+  uint ellipsis = 0;
 };
 
 /**
@@ -935,9 +935,9 @@ public:
 
   // Eventually the type-specifier of a constructed type, eg. "MyClass(expression)"
   // If this is nonzero, then expression is most probably zero.
-  TypeSpecifierAST *type_specifier;
-  ExpressionAST *expression;
-  const ListNode<ExpressionAST*> *sub_expressions;
+  TypeSpecifierAST *type_specifier = nullptr;
+  ExpressionAST *expression = nullptr;
+  const ListNode<ExpressionAST*> *sub_expressions = nullptr;
 };
 
 class PrimaryExpressionAST : public ExpressionAST
@@ -960,7 +960,7 @@ public:
     SubExpression,
     Name
   };
-  Type type;
+  Type type = Type::Literal;
 };
 
 class PtrOperatorAST : public AST
@@ -969,9 +969,9 @@ public:
 
   DECLARE_AST_NODE(PtrOperator)
 
-  const ListNode<uint> *cv;
-  uint op; //Index of the token that describes the operator. Is zero when mem_ptr is non-zero.
-  PtrToMemberAST *mem_ptr;
+  const ListNode<uint> *cv = nullptr;
+  uint op = 0; //Index of the token that describes the operator. Is zero when mem_ptr is non-zero.
+  PtrToMemberAST *mem_ptr = nullptr;
 };
 
 class PtrToMemberAST : public AST
@@ -980,7 +980,7 @@ public:
 
   DECLARE_AST_NODE(PtrToMember)
 
-  TypeSpecifierAST *class_type;
+  TypeSpecifierAST *class_type = nullptr;
 };
 
 class JumpStatementAST : public StatementAST
@@ -992,9 +992,9 @@ public:
   // index of operator token which describes the jump, one of
   // 'break', 'continue' or 'goto.  Return statements are handled by
   // ReturnStatementAST
-  uint op;
+  uint op = 0;
   // identifier for 'goto' statements
-  uint identifier;
+  uint identifier = 0;
 };
 
 class ReturnStatementAST : public StatementAST
@@ -1003,7 +1003,7 @@ public:
 
   DECLARE_AST_NODE(ReturnStatement)
 
-  ExpressionAST *expression;
+  ExpressionAST *expression = nullptr;
 };
 
 class SimpleDeclarationAST : public DeclarationAST
@@ -1012,11 +1012,11 @@ public:
 
   DECLARE_AST_NODE(SimpleDeclaration)
 
-  const ListNode<uint> *storage_specifiers;
-  const ListNode<uint> *function_specifiers;
-  TypeSpecifierAST *type_specifier;
-  const ListNode<InitDeclaratorAST*> *init_declarators;
-  WinDeclSpecAST *win_decl_specifiers;
+  const ListNode<uint> *storage_specifiers = nullptr;
+  const ListNode<uint> *function_specifiers = nullptr;
+  TypeSpecifierAST *type_specifier = nullptr;
+  const ListNode<InitDeclaratorAST*> *init_declarators = nullptr;
+  WinDeclSpecAST *win_decl_specifiers = nullptr;
 };
 
 class SimpleTypeSpecifierAST : public TypeSpecifierAST
@@ -1025,13 +1025,13 @@ public:
 
   DECLARE_AST_NODE(SimpleTypeSpecifier)
 
-  const ListNode<uint> *integrals;
-  TypeIdAST *type_id;
-  NameAST *name;
+  const ListNode<uint> *integrals = nullptr;
+  TypeIdAST *type_id = nullptr;
+  NameAST *name = nullptr;
   // expression for typeof or decltype
-  ExpressionAST *expression;
-  bool isTypeof : 1;
-  bool isDecltype : 1;
+  ExpressionAST *expression = nullptr;
+  bool isTypeof = false;
+  bool isDecltype = false;
 };
 
 class SizeofExpressionAST : public ExpressionAST
@@ -1040,10 +1040,10 @@ public:
 
   DECLARE_AST_NODE(SizeofExpression)
 
-  uint sizeof_token;
-  TypeIdAST *type_id;
-  ExpressionAST *expression;
-  bool isVariadic;
+  uint sizeof_token = 0;
+  TypeIdAST *type_id = nullptr;
+  ExpressionAST *expression = nullptr;
+  bool isVariadic = false;
 };
 
 class StaticAssertAST : public DeclarationAST
@@ -1052,8 +1052,8 @@ public:
 
   DECLARE_AST_NODE(StaticAssert)
 
-  ExpressionAST *expression;
-  StringLiteralAST *string;
+  ExpressionAST *expression = nullptr;
+  StringLiteralAST *string = nullptr;
 };
 
 class StringLiteralAST : public AST
@@ -1062,7 +1062,7 @@ public:
 
   DECLARE_AST_NODE(StringLiteral)
 
-  const ListNode<uint> *literals;
+  const ListNode<uint> *literals = nullptr;
 };
 
 /// operator []
@@ -1072,7 +1072,7 @@ public:
 
   DECLARE_AST_NODE(SubscriptExpression)
 
-  ExpressionAST *subscript;
+  ExpressionAST *subscript = nullptr;
 };
 
 class SwitchStatementAST : public StatementAST
@@ -1081,8 +1081,8 @@ public:
 
   DECLARE_AST_NODE(SwitchStatement)
 
-  ConditionAST *condition;
-  StatementAST *statement;
+  ConditionAST *condition = nullptr;
+  StatementAST *statement = nullptr;
 };
 
 class TemplateArgumentAST : public AST
@@ -1091,9 +1091,9 @@ public:
 
   DECLARE_AST_NODE(TemplateArgument)
 
-  TypeIdAST *type_id;
-  ExpressionAST *expression;
-  bool isVariadic;
+  TypeIdAST *type_id = nullptr;
+  ExpressionAST *expression = nullptr;
+  bool isVariadic = false;
 };
 
 class TemplateDeclarationAST : public DeclarationAST
@@ -1102,9 +1102,9 @@ public:
 
   DECLARE_AST_NODE(TemplateDeclaration)
 
-  uint exported;
-  const ListNode<TemplateParameterAST*> *template_parameters;
-  DeclarationAST* declaration;
+  uint exported = 0;
+  const ListNode<TemplateParameterAST*> *template_parameters = nullptr;
+  DeclarationAST* declaration = nullptr;
 };
 
 class TemplateParameterAST : public AST
@@ -1113,8 +1113,8 @@ public:
 
   DECLARE_AST_NODE(TemplateParameter)
 
-  TypeParameterAST *type_parameter; //This is used if this is a template-parameter like "class A"
-  ParameterDeclarationAST *parameter_declaration; //This is used if this is a template-parameter like "int a"
+  TypeParameterAST *type_parameter = nullptr; //This is used if this is a template-parameter like "class A"
+  ParameterDeclarationAST *parameter_declaration = nullptr; //This is used if this is a template-parameter like "int a"
 };
 
 class ThrowExpressionAST : public ExpressionAST
@@ -1123,8 +1123,8 @@ public:
 
   DECLARE_AST_NODE(ThrowExpression)
 
-  uint throw_token;
-  ExpressionAST *expression;
+  uint throw_token = 0;
+  ExpressionAST *expression = nullptr;
 };
 
 class TrailingReturnTypeAST : public AST
@@ -1133,9 +1133,9 @@ public:
 
   DECLARE_AST_NODE(TrailingReturnType)
 
-  const ListNode<TypeSpecifierAST*> *type_specifier;
+  const ListNode<TypeSpecifierAST*> *type_specifier = nullptr;
   // TODO: attribute-specifier-seq
-  DeclaratorAST* abstractDeclarator;
+  DeclaratorAST* abstractDeclarator = nullptr;
 };
 
 class TranslationUnitAST : public AST, public CommentAST
@@ -1146,14 +1146,14 @@ public:
 
   DECLARE_AST_NODE(TranslationUnit)
 
-  const ListNode<DeclarationAST*> *declarations;
+  const ListNode<DeclarationAST*> *declarations = nullptr;
 
   ///true if either a '}' was missing at the end, or there was a '}' too much.
   ///This indicates a temporary state where the user is typing, and the document is completely invalid.
-  bool hadMissingCompoundTokens;
+  bool hadMissingCompoundTokens = false;
 
   // Note: non AST related, saves parsing session...
-  ParseSession* session;
+  ParseSession* session = nullptr;
 };
 
 class TryBlockStatementAST : public StatementAST
@@ -1162,8 +1162,8 @@ public:
 
   DECLARE_AST_NODE(TryBlockStatement)
 
-  StatementAST* try_block;
-  const ListNode<CatchStatementAST*> *catch_blocks;
+  StatementAST* try_block = nullptr;
+  const ListNode<CatchStatementAST*> *catch_blocks = nullptr;
 };
 
 class CatchStatementAST : public StatementAST
@@ -1172,8 +1172,8 @@ public:
 
   DECLARE_AST_NODE(CatchStatement)
 
-  ConditionAST* condition;
-  StatementAST* statement;
+  ConditionAST* condition = nullptr;
+  StatementAST* statement = nullptr;
 };
 
 class TypeIdAST : public AST
@@ -1182,8 +1182,8 @@ public:
 
   DECLARE_AST_NODE(TypeId)
 
-  TypeSpecifierAST *type_specifier;
-  DeclaratorAST *declarator;
+  TypeSpecifierAST *type_specifier = nullptr;
+  DeclaratorAST *declarator = nullptr;
 };
 
 /// typeid(...)
@@ -1193,7 +1193,7 @@ public:
 
   DECLARE_AST_NODE(TypeIDOperator)
 
-  TypeIdAST* typeId;
+  TypeIdAST* typeId = nullptr;
 };
 
 ///"typename"
@@ -1203,9 +1203,9 @@ public:
 
   DECLARE_AST_NODE(TypeIdentification)
 
-  uint typename_token;
-  NameAST *name;
-  ExpressionAST *expression;
+  uint typename_token = 0;
+  NameAST *name = nullptr;
+  ExpressionAST *expression = nullptr;
 };
 
 class TypeParameterAST : public AST
@@ -1214,12 +1214,12 @@ public:
 
   DECLARE_AST_NODE(TypeParameter)
 
-  NameAST *name;
-  TypeIdAST *type_id;
-  const ListNode<TemplateParameterAST*> *template_parameters;
-  NameAST *template_name;
-  uint type;
-  bool isVariadic;
+  NameAST *name = nullptr;
+  TypeIdAST *type_id = nullptr;
+  const ListNode<TemplateParameterAST*> *template_parameters = nullptr;
+  NameAST *template_name = nullptr;
+  uint type = 0;
+  bool isVariadic = false;
 };
 
 class TypedefAST : public DeclarationAST
@@ -1228,8 +1228,8 @@ public:
 
   DECLARE_AST_NODE(Typedef)
 
-  TypeSpecifierAST *type_specifier;
-  const ListNode<InitDeclaratorAST*> *init_declarators;
+  TypeSpecifierAST *type_specifier = nullptr;
+  const ListNode<InitDeclaratorAST*> *init_declarators = nullptr;
 };
 
 class UnaryExpressionAST : public ExpressionAST
@@ -1238,8 +1238,8 @@ public:
 
   DECLARE_AST_NODE(UnaryExpression)
 
-  uint op; //Index of the token that describes the operator
-  ExpressionAST *expression;
+  uint op = 0; //Index of the token that describes the operator
+  ExpressionAST *expression = nullptr;
 };
 
 class UnqualifiedNameAST : public AST
@@ -1248,11 +1248,11 @@ public:
 
   DECLARE_AST_NODE(UnqualifiedName)
 
-  bool tilde : 1;
-  bool ellipsis : 1;
-  uint id;
-  OperatorFunctionIdAST *operator_id;
-  const ListNode<TemplateArgumentAST*> *template_arguments;
+  bool tilde = false;
+  bool ellipsis = false;
+  uint id = 0;
+  OperatorFunctionIdAST *operator_id = nullptr;
+  const ListNode<TemplateArgumentAST*> *template_arguments = nullptr;
 };
 
 class UsingAST : public DeclarationAST
@@ -1261,8 +1261,8 @@ public:
 
   DECLARE_AST_NODE(Using)
 
-  uint type_name;
-  NameAST *name;
+  uint type_name = 0;
+  NameAST *name = nullptr;
 };
 
 class UsingDirectiveAST : public DeclarationAST
@@ -1271,7 +1271,7 @@ public:
 
   DECLARE_AST_NODE(UsingDirective)
 
-  NameAST *name;
+  NameAST *name = nullptr;
 };
 
 class AliasDeclarationAST : public DeclarationAST
@@ -1280,8 +1280,8 @@ public:
 
   DECLARE_AST_NODE(AliasDeclaration)
 
-  NameAST *name;
-  TypeIdAST *type_id;
+  NameAST *name = nullptr;
+  TypeIdAST *type_id = nullptr;
 };
 
 class WhileStatementAST : public StatementAST
@@ -1290,8 +1290,8 @@ public:
 
   DECLARE_AST_NODE(WhileStatement)
 
-  ConditionAST *condition;
-  StatementAST *statement;
+  ConditionAST *condition = nullptr;
+  StatementAST *statement = nullptr;
 };
 
 class WinDeclSpecAST : public AST
@@ -1300,8 +1300,8 @@ public:
 
   DECLARE_AST_NODE(WinDeclSpec)
 
-  uint specifier;
-  uint modifier;
+  uint specifier = 0;
+  uint modifier = 0;
 };
 
 

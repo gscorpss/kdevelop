@@ -41,10 +41,9 @@ void TestPool::testSimpleAllocation()
 void TestPool::testObjectAllocation()
 {
     MemoryPool pool;
-    PoolObject *p = pool.allocate<PoolObject>(1);
+    PoolObject *p = new(pool.allocate<PoolObject>(1)) PoolObject();
     //object is not yet initialized (it's actually zeroed
     //because the block in the pool is zeroed
-    QCOMPARE(p->foo, 0);
     pool.construct(p, PoolObject());
     //now we have the object there
     QCOMPARE(p->foo, 3);

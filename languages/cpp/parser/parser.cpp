@@ -67,7 +67,7 @@
 template <class _Tp>
 inline _Tp *CreateNode(MemoryPool *memory_pool)
 {
-  _Tp *node = memory_pool->allocate<_Tp>();
+  _Tp *node = new (memory_pool->allocate<_Tp>()) _Tp();
   node->kind = _Tp::__node_kind;
   return node;
 }

@@ -31,7 +31,12 @@ template <typename Tp>
 class ListNode
 {
 public:
-
+  ListNode()
+  :element()
+  , index(0)
+  , next(nullptr)
+  {
+  }
   Tp element;
   int index;
   mutable const ListNode<Tp> *next;
