@@ -237,18 +237,18 @@ namespace Cpp {
       **/
       ///*DUChain must be locked*
       QList<CompletionTreeItemPointer> keywordCompletionItems();
-      QList<CompletionTreeItemPointer> memberAccessCompletionItems(const bool& shouldAbort);
-      QList<CompletionTreeItemPointer> returnAccessCompletionItems();
-      QList<CompletionTreeItemPointer> caseAccessCompletionItems();
-      QList<CompletionTreeItemPointer> templateAccessCompletionItems();
-      QList<CompletionTreeItemPointer> functionAccessCompletionItems(bool fullCompletion);
-      QList<CompletionTreeItemPointer> binaryFunctionAccessCompletionItems(bool fullCompletion);
+      void memberAccessCompletionItems(const bool& shouldAbort, QList<CompletionTreeItemPointer>& items);
+      void returnAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
+      void caseAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
+      void templateAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
+      void functionAccessCompletionItems(bool fullCompletion, QList< KDevelop::CompletionTreeItemPointer >& items);
+      void binaryFunctionAccessCompletionItems(bool fullCompletion, QList< KDevelop::CompletionTreeItemPointer >& items);
       ///*DUChain must _not_ be locked*
-      QList<CompletionTreeItemPointer> commonFunctionAccessCompletionItems(bool fullCompletion);
-      QList<CompletionTreeItemPointer> includeListAccessCompletionItems(const bool& shouldAbort);
-      QList<CompletionTreeItemPointer> signalSlotAccessCompletionItems();
+      void commonFunctionAccessCompletionItems(bool fullCompletion, QList< KDevelop::CompletionTreeItemPointer >& items);
+      void includeListAccessCompletionItems(const bool& shouldAbort, QList< KDevelop::CompletionTreeItemPointer >& items);
+      void signalSlotAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
       ///Computes the completion-items for the case that no special kind of access is used(just a list of all suitable items is needed)
-      QList<CompletionTreeItemPointer> standardAccessCompletionItems();
+      void standardAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
       QList<CompletionTreeItemPointer> getImplementationHelpers();
       QList<CompletionTreeItemPointer> getImplementationHelpersInternal(const QualifiedIdentifier& minimumScope, DUContext* context);
 
@@ -272,7 +272,7 @@ namespace Cpp {
       void replaceCurrentAccess(const QString& oldAccess, const QString& newAccess);
 
       ///Creates the group and adds it to m_storedUngroupedItems if items is not empty
-      void eventuallyAddGroup(QString name, int priority, QList< KSharedPtr< KDevelop::CompletionTreeItem > > items);
+      void eventuallyAddGroup(const QString& name, int priority, const QList< KSharedPtr< KDevelop::CompletionTreeItem > >& items);
       
       ///@param type The type of the argument the items are matched to.
       ///*DUChain must be locked*
