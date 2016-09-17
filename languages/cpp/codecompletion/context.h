@@ -249,8 +249,8 @@ namespace Cpp {
       void signalSlotAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
       ///Computes the completion-items for the case that no special kind of access is used(just a list of all suitable items is needed)
       void standardAccessCompletionItems(QList< KDevelop::CompletionTreeItemPointer >& items);
-      QList<CompletionTreeItemPointer> getImplementationHelpers();
-      QList<CompletionTreeItemPointer> getImplementationHelpersInternal(const QualifiedIdentifier& minimumScope, DUContext* context);
+      void getImplementationHelpers(QList< KDevelop::CompletionTreeItemPointer >& res);
+      void getImplementationHelpersInternal(const KDevelop::QualifiedIdentifier& minimumScope, KDevelop::DUContext* context, QList< KDevelop::CompletionTreeItemPointer >& ret);
 
       ///If @param forDecl is an instance of a class, find declarations in that class which match @param matchTypes
       ///@returns the list of matching declarations and whether or not you need the arrow operator (->) to access them

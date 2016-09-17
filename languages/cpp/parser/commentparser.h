@@ -26,23 +26,19 @@ class ParseSession;
 
 class Comment {
   public:
-    explicit Comment( uint token = 0, int line = -1 );
+    explicit Comment( uint token = 0, int line = -1 ): m_line(line), m_token( token ) {}
 
-    operator bool() const;
+    inline operator bool() const { return m_line != -1 && m_token != 0; }
 
-    inline int line() const {
-        return m_line;
-    }
+    inline int line() const { return m_line; }
 
-    bool operator==( const Comment& comment ) const;
-    
-    bool operator < ( const Comment& rhs ) const;
+    inline bool operator==( const Comment& comment ) const { return isSame(comment); }
 
-    bool isSame ( const Comment& rhs ) const;
+    inline bool operator < ( const Comment& rhs ) const { return m_token < rhs.m_token; }
 
-    uint token() const {
-      return m_token;
-    }
+    inline bool isSame ( const Comment& rhs ) const { return m_token == rhs.m_token; }
+
+    inline uint token() const { return m_token; }
   private:
     int m_line;
     uint m_token;

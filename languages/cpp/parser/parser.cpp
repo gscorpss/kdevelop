@@ -338,7 +338,9 @@ bool Parser::parseWinDeclSpec(WinDeclSpecAST *&node)
   node->specifier = specifier;
   node->modifier = modifier;
 
-  UPDATE_POS(node, start, _M_last_valid_token+1);
+
+  node->start_token = start ;
+  node->end_token = _M_last_valid_token+1 ;
 
   return true;
 }

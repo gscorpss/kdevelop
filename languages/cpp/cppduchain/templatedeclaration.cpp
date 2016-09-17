@@ -614,9 +614,11 @@ CppDUContext<KDevelop::DUContext>* instantiateDeclarationAndContext( KDevelop::D
               BaseClassInstance newInstance(base);
               newInstance.baseClass = newType->indexed();
               klass->replaceBaseClass( num, newInstance );
-            } else {
-              kWarning(9007) << "Resolved bad base-class" << delayed->toString() << (newType ? newType->toString() : QString());
             }
+//             else
+//             {
+//               kWarning(9007) << "Resolved bad base-class" << delayed->toString() << (newType ? newType->toString() : QString());
+//             }
           }
           ++num;
         }

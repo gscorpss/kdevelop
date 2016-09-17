@@ -18,26 +18,6 @@
 #include "commentparser.h"
 // #include <kdebug.h>
 
-Comment::Comment( uint token, int line ) : m_line(line), m_token( token ) {
-}
-
-Comment::operator bool() const {
-    return m_line != -1 && m_token != 0;
-}
-
-bool Comment::operator==( const Comment& rhs ) const {
-  return isSame(rhs);
-}
-
-
-bool Comment::operator < ( const Comment& rhs ) const {
-    return m_token < rhs.m_token;
-}
-
-bool Comment::isSame ( const Comment& rhs ) const {
-    return m_token == rhs.m_token;
-}
-
 Comment CommentStore::takeComment( int line ) {
     CommentSet::iterator it = m_comments.find( Comment( 0, line ) );
     if( it != m_comments.end() ) {
@@ -49,7 +29,6 @@ Comment CommentStore::takeComment( int line ) {
         return Comment();
     }
 }
-
 
 Comment CommentStore::takeCommentInRange( int end, int start ) {
     CommentSet::iterator it = m_comments.lower_bound( Comment( 0, end ) );

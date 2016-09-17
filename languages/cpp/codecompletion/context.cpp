@@ -1911,7 +1911,8 @@ void CodeCompletionContext::addOverridableItems()
 
 void CodeCompletionContext::addImplementationHelpers()
 {
-  QList<CompletionTreeItemPointer> helpers = getImplementationHelpers();
+  QList<CompletionTreeItemPointer> helpers;
+  getImplementationHelpers(helpers);
   if(!helpers.isEmpty()) {
     eventuallyAddGroup(i18nc("@action", "Implement Function"), 0, helpers);
   }
@@ -2072,27 +2073,22 @@ void CodeCompletionContext::addLookaheadMatches(const QList<CompletionTreeItemPo
   eventuallyAddGroup(i18n("Lookahead Matches"), 800, lookaheadMatches);
 }
 
-QList<CompletionTreeItemPointer> CodeCompletionContext::getImplementationHelpers() {
-  QList<CompletionTreeItemPointer> ret;
+void CodeCompletionContext::getImplementationHelpers(QList<CompletionTreeItemPointer>& ret) {
   TopDUContext* searchInContext = m_duContext->topContext();
 
   if(searchInContext)
-    ret += getImplementationHelpersInternal(m_duContext->scopeIdentifier(true), searchInContext);
+    getImplementationHelpersInternal(m_duContext->scopeIdentifier(true), searchInContext, ret);
 
   if(!CppUtils::isHeader( searchInContext->url().toUrl() )) {
     KUrl headerUrl = CppUtils::sourceOrHeaderCandidate( searchInContext->url().str(), false );
     searchInContext = ICore::self()->languageController()->language("C++")->languageSupport()->standardContext(headerUrl);
     if(searchInContext)
-      ret += getImplementationHelpersInternal(m_duContext->scopeIdentifier(true), searchInContext);
+      getImplementationHelpersInternal(m_duContext->scopeIdentifier(true), searchInContext, ret);
   }
-
-  return ret;
 }
 
-QList<CompletionTreeItemPointer> CodeCompletionContext::getImplementationHelpersInternal(const QualifiedIdentifier& minimumScope, DUContext* context)
+void CodeCompletionContext::getImplementationHelpersInternal(const QualifiedIdentifier& minimumScope, DUContext* context, QList<CompletionTreeItemPointer>& ret)
 {
-  QList<CompletionTreeItemPointer> ret;
-
   foreach(Declaration* decl, context->localDeclarations()) {
     if (decl->range().isEmpty() || decl->isDefinition() || FunctionDefinition::definition(decl)) {
       continue;
@@ -2119,11 +2115,9 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::getImplementationHelpers
         || child->type() == DUContext::Class
         || child->type() == DUContext::Helper)
     {
-      ret += getImplementationHelpersInternal(minimumScope, child);
+      getImplementationHelpersInternal(minimumScope, child, ret);
     }
   }
-
-  return ret;
 }
 
 void CodeCompletionContext::addSpecialItemsForArgumentType(AbstractType::Ptr type) {
