@@ -265,19 +265,21 @@ PlasmoidExecutionConfigType::~PlasmoidExecutionConfigType()
     factoryList.clear();
 }
 
-QString PlasmoidExecutionConfigType::name() const
+const QString& PlasmoidExecutionConfigType::name() const
 {
-    return i18n("Plasmoid Launcher");
+    static QString s(i18n("Plasmoid Launcher"));
+    return s;
 }
 
-QList<KDevelop::LaunchConfigurationPageFactory*> PlasmoidExecutionConfigType::configPages() const
+const QList< KDevelop::LaunchConfigurationPageFactory* >& PlasmoidExecutionConfigType::configPages() const
 {
     return factoryList;
 }
 
-QString PlasmoidExecutionConfigType::typeId()
+const QString& PlasmoidExecutionConfigType::typeId()
 {
-    return "PlasmoidLauncherType";
+    static QString s("PlasmoidLauncherType");
+    return s;
 }
 
 KIcon PlasmoidExecutionConfigType::icon() const
