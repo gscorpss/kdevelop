@@ -121,10 +121,11 @@ void CTestRunJob::start()
     arguments.prepend(m_suite->executable().toLocalFile());
     m_job = createTestJob("execute", arguments);
 
-    if (ExecuteCompositeJob* cjob = dynamic_cast<ExecuteCompositeJob*>(m_job)) {
-        if (!cjob->subjobs().empty())
+    if (ExecuteCompositeJob* cjob = dynamic_cast<ExecuteCompositeJob*>(m_job))
+    {
+        m_outputJob = cjob->findChild<OutputJob*>();
+        if (m_outputJob)
         {
-            m_outputJob = dynamic_cast<OutputJob*>(cjob->subjobs().last());
             Q_ASSERT(m_outputJob);
             m_outputJob->setVerbosity(m_verbosity);
 
@@ -141,7 +142,7 @@ void CTestRunJob::start()
         }
     }
     connect(m_job, SIGNAL(finished(KJob*)), SLOT(processFinished(KJob*)));
-    
+
     ICore::self()->testController()->notifyTestRunStarted(m_suite, cases_selected);
 }
 
@@ -225,3 +226,4 @@ void CTestRunJob::rowsInserted(const QModelIndex &parent, int startRow, int endR
         }
     }
 }
+

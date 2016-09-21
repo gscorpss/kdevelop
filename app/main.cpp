@@ -544,12 +544,10 @@ int main( int argc, char *argv[] )
             kDebug() << launchName << "not found, creating a new one";
             QPair<QString,QString> launcher;
             launcher.first = "debug";
-            foreach (KDevelop::ILauncher *l, type->launchers()) {
-                if (l->id() == args->getOption("debug")) {
-                    if (l->supportedModes().contains("debug")) {
+            for (KDevelop::ILauncher *l : type->launchers())
+            {
+                if (l->id() == args->getOption("debug") && l->supportedModes().contains("debug"))
                         launcher.second = l->id();
-                    }
-                }
             }
             if (launcher.second.isEmpty()) {
                 QTextStream qerr(stderr);
