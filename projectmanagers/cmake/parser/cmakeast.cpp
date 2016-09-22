@@ -628,9 +628,17 @@ bool AddTestAst::parseFunctionInfo( const CMakeFunctionDesc& func )
                 m_testName = it->value;
                 break;
             case Command:
+            {
                 m_exeName = it->value;
+                if (m_exeName.startsWith("$<TARGET_FILE:"))
+                {
+                    m_exeName.remove(0, 14);
+                    m_exeName.remove(m_exeName.size()-1, 1);
+                    m_exeName = m_exeName.trimmed();
+                }
                 state = Arg;
                 break;
+            }
             case Arg:
                 m_testArgs << it->value;
                 break;
