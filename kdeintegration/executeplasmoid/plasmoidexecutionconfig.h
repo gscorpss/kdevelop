@@ -86,8 +86,6 @@ public:
     virtual ~PlasmoidExecutionConfigType();
 
     static const QString& typeId();
-    const QString& id() const { return typeId(); }
-    const QString& name() const;
     const QList<KDevelop::LaunchConfigurationPageFactory*>& configPages() const;
     KIcon icon() const;
     virtual bool canLaunch( const KUrl& file ) const;

@@ -544,16 +544,14 @@ int main( int argc, char *argv[] )
             kDebug() << launchName << "not found, creating a new one";
             QPair<QString,QString> launcher;
             launcher.first = "debug";
-            for (KDevelop::ILauncher *l : type->launchers())
-            {
-                if (l->id() == args->getOption("debug") && l->supportedModes().contains("debug"))
-                        launcher.second = l->id();
-            }
-            if (launcher.second.isEmpty()) {
+            KDevelop::ILauncher *l = type->launcherBy([&](KDevelop::ILauncher *l) { return l->id() == args->getOption("debug") && l->supportedModes().contains("debug");});
+
+            if (!l) {
                 QTextStream qerr(stderr);
                 qerr << endl << i18n("Cannot find launcher %1", args->getOption("debug")) << endl;
                 return 1;
             }
+            launcher.second = l->id();
             KDevelop::ILaunchConfiguration* ilaunch = core->runController()->createLaunchConfiguration(type, launcher, 0, launchName);
             launch = dynamic_cast<KDevelop::LaunchConfiguration*>(ilaunch);
         }

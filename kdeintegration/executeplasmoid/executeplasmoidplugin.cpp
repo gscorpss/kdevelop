@@ -81,7 +81,7 @@ QString ExecutePlasmoidPlugin::environmentGroup(ILaunchConfiguration* /*config*/
     return QString();
 }
 
-QString ExecutePlasmoidPlugin::nativeAppConfigTypeId() const
+const QString& ExecutePlasmoidPlugin::nativeAppConfigTypeId() const
 {
     return PlasmoidExecutionConfigType::typeId();
 }

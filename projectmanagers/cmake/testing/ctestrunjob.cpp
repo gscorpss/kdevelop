@@ -68,15 +68,7 @@ KJob* createTestJob(QString launchModeId, QStringList arguments )
     kDebug() << "got mode and type:" << type << type->id() << mode << mode->id();
     Q_ASSERT(type && mode);
 
-    ILauncher* launcher = 0;
-    foreach (ILauncher *l, type->launchers())
-    {
-        //kDebug() << "avaliable launcher" << l << l->id() << l->supportedModes();
-        if (l->supportedModes().contains(mode->id())) {
-            launcher = l;
-            break;
-        }
-    }
+    ILauncher* launcher = type->launcherBy([&](const ILauncher* l) { return l->supportedModes().contains(mode->id()); });
     Q_ASSERT(launcher);
 
     ILaunchConfiguration* ilaunch = 0;

@@ -255,6 +255,7 @@ PlasmoidPageFactory::PlasmoidPageFactory()
 {}
 
 PlasmoidExecutionConfigType::PlasmoidExecutionConfigType()
+: LaunchConfigurationType(i18n("Plasmoid Launcher"), typeId())
 {
     factoryList.append( new PlasmoidPageFactory );
 }
@@ -263,12 +264,6 @@ PlasmoidExecutionConfigType::~PlasmoidExecutionConfigType()
 {
     qDeleteAll(factoryList);
     factoryList.clear();
-}
-
-const QString& PlasmoidExecutionConfigType::name() const
-{
-    static QString s(i18n("Plasmoid Launcher"));
-    return s;
 }
 
 const QList< KDevelop::LaunchConfigurationPageFactory* >& PlasmoidExecutionConfigType::configPages() const

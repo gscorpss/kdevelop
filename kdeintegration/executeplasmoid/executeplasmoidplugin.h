@@ -45,7 +45,7 @@ class ExecutePlasmoidPlugin : public KDevelop::IPlugin, public IExecutePlugin
         virtual QStringList arguments(KDevelop::ILaunchConfiguration* config, QString& error) const;
         virtual KJob* dependecyJob(KDevelop::ILaunchConfiguration* config) const;
         virtual QString environmentGroup(KDevelop::ILaunchConfiguration* config) const;
-        virtual QString nativeAppConfigTypeId() const;
+        virtual const QString& nativeAppConfigTypeId() const;
         virtual QString terminal(KDevelop::ILaunchConfiguration* config) const;
         virtual bool useTerminal(KDevelop::ILaunchConfiguration* config) const;
         virtual KUrl workingDirectory(KDevelop::ILaunchConfiguration* config) const;
