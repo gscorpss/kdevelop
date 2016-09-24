@@ -73,7 +73,18 @@ Q_DECLARE_TYPEINFO(Target, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(CacheEntry, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Macro, Q_MOVABLE_TYPE);
 
-enum PropertyType { GlobalProperty, DirectoryProperty, TargetProperty, SourceProperty, TestProperty, CacheProperty, VariableProperty };
+enum PropertyType
+{
+    GlobalProperty = 0,
+    DirectoryProperty,
+    TargetProperty,
+    SourceProperty,
+    TestProperty,
+    CacheProperty,
+    VariableProperty,
+
+    MaxPropertyID
+};
 typedef QHash<QString, QMap<QString, QStringList> > CategoryType;
 typedef QMap<PropertyType, CategoryType > CMakeProperties;
 

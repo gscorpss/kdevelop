@@ -125,14 +125,27 @@ CMAKE_ADD_AST_MEMBER( QString, target )
 CMAKE_ADD_AST_MEMBER( QStringList, dependencies )
 CMAKE_END_AST_CLASS( AddDependenciesAst )
 
-CMAKE_BEGIN_AST_CLASS( AddExecutableAst )
-CMAKE_ADD_AST_MEMBER( QString, executable )
-CMAKE_ADD_AST_MEMBER( bool, isWin32 )
-CMAKE_ADD_AST_MEMBER( bool, isOsXBundle )
-CMAKE_ADD_AST_MEMBER( bool, excludeFromAll )
-CMAKE_ADD_AST_MEMBER( bool, isImported )
-CMAKE_ADD_AST_MEMBER( QStringList, sourceLists )
-CMAKE_END_AST_CLASS( AddExecutableAst )
+class AddExecutableAst  : public CMakeAst {
+public:
+    AddExecutableAst ();
+    ~AddExecutableAst ();
+    virtual int accept(CMakeAstVisitor * visitor) const { return visitor->visit(this); }
+    virtual bool parseFunctionInfo( const CMakeFunctionDesc& func );
+
+    const QString& executable () const { return m_executable; }
+    bool isWin32 () const { return m_isWin32; }
+    bool isOsXBundle () const { return m_isOsXBundle; }
+    bool excludeFromAll () const { return m_excludeFromAll; }
+    bool isImported () const { return m_isImported; }
+    const QStringList& sourceLists () const { return m_sourceLists; }
+private:
+    QString  m_executable;
+    bool  m_isWin32;
+    bool  m_isOsXBundle;
+    bool  m_excludeFromAll;
+    bool  m_isImported;
+    QStringList  m_sourceLists;
+};
 
 CMAKE_BEGIN_AST_CLASS( AddLibraryAst )
 enum LibraryType {Shared, Static, Module, Object, Unknown};
@@ -152,12 +165,18 @@ CMAKE_ADD_AST_MEMBER( QString, binaryDir )
 CMAKE_ADD_AST_MEMBER( bool, excludeFromAll )
 CMAKE_END_AST_CLASS( AddSubdirectoryAst )
 
-
-CMAKE_BEGIN_AST_CLASS( AddTestAst )
-CMAKE_ADD_AST_MEMBER( QString, testName )
-CMAKE_ADD_AST_MEMBER( QString, exeName )
-CMAKE_ADD_AST_MEMBER( QStringList, testArgs )
-CMAKE_END_AST_CLASS( AddTestAst )
+class AddTestAst : public CMakeAst {
+public:
+    virtual int accept(CMakeAstVisitor * visitor) const { return visitor->visit(this); }
+    virtual bool parseFunctionInfo( const CMakeFunctionDesc& func );
+    const QString& testName () const { return m_testName; }
+    const QString& exeName () const { return m_exeName; }
+    const QStringList& testArgs () const { return m_testArgs; }
+private:
+    QString  m_testName;
+    QString  m_exeName;
+    QStringList  m_testArgs;
+};
 
 
 CMAKE_BEGIN_AST_CLASS( AuxSourceDirectoryAst )

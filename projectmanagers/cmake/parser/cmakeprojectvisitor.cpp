@@ -292,6 +292,11 @@ int CMakeProjectVisitor::visit( const AddTestAst * test)
     {
         t.executable.chop(4);
     }
+    else if (t.executable.startsWith("$<TARGET_FILE:"))
+    {
+        t.executable.remove(0, 14);
+        t.executable.chop(1);
+    }
 
     kDebug(9042) << "AddTestAst" << t.executable;
     m_testSuites << t;

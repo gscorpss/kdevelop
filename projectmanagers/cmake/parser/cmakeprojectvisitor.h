@@ -137,7 +137,7 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
             int line;
             KDevelop::ReferencedTopDUContext context;
         };
-        CMakeProperties properties() { return m_props; }
+        const CMakeProperties& properties() { return m_props; }
         
         static void setMessageCallback(message_callback f) { s_msgcallback=f; }
         
