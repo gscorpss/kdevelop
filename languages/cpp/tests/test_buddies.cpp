@@ -76,7 +76,7 @@ void TestBuddies::verifyFilename(Sublime::View *view, const QString& endOfFilena
         QVERIFY(urlDoc);
         if(urlDoc)
         {
-            QVERIFY(urlDoc->url().toLocalFile().endsWith(endOfFilename));
+            QVERIFY(urlDoc->getUrl().toLocalFile().endsWith(endOfFilename));
         }
     }
 }
