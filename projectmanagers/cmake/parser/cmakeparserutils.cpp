@@ -189,16 +189,16 @@ namespace CMakeParserUtils
         v.setModulePath(data->modulePath);
         v.setEnvironmentProfile(env);
 //        v.setProperties(data->properties);
-        v.setDefinitions(data->definitions);
+//        v.setDefinitions(data->definitions);
         v.walk(f, 0, true);
         
         data->projectName=v.projectName();
 //        data->subdirectories=v.subdirectories();
         data->targets=v.targets();
 //        data->properties=v.properties();
-        data->testSuites=v.testSuites();
+//        data->testSuites=v.testSuites();
         data->targetAlias=v.targetAlias();
-        data->definitions=v.definitions();
+//        data->definitions=v.definitions();
         
         //printSubdirectories(data->subdirectories);
         

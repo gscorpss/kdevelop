@@ -104,20 +104,20 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
         void setVariableMap( VariableMap* vars );
         void setMacroMap( MacroMap* macros ) { m_macros=macros; }
         void setModulePath(const QStringList& mp) { m_modulePath=mp; }
-        void setDefinitions(const CMakeDefinitions& defs) { m_defs=defs; }
+//        void setDefinitions(const CMakeDefinitions& defs) { m_defs=defs; }
         
         /** sets the @p profile env variables that will be used to override those in the current system */
         void setEnvironmentProfile(const QMap<QString, QString>& profile) { m_environmentProfile = profile; }
 
         const VariableMap* variables() const { return m_vars; }
         const CacheValues* cache() const { return m_cache; }
-        const CMakeDefinitions& definitions() const { return m_defs; }
+//        const CMakeDefinitions& definitions() const { return m_defs; }
         
         const QString& projectName() const { return m_projectName; }
 //        const QVector<Subdirectory>& subdirectories() const { return m_subdirectories; }
         QVector<Target> targets() const { return m_targetForId.values().toVector(); }
         QStringList resolveDependencies(const QStringList& target) const;
-        const QVector<Test>& testSuites() const { return m_testSuites; }
+//        const QVector<Test>& testSuites() const { return m_testSuites; }
             
         int walk(const CMakeFileContent& fc, int line, bool isClean=false);
         
@@ -201,7 +201,7 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
         VariableMap *m_vars;
         MacroMap *m_macros;
         const CacheValues* m_cache;
-        CMakeDefinitions m_defs;
+//        CMakeDefinitions m_defs;
         KDevelop::ReferencedTopDUContext m_topctx;
         KDevelop::ReferencedTopDUContext m_parentCtx;
         bool m_hitBreak;
@@ -209,7 +209,7 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
         QMap<QString, QString> m_environmentProfile;
         QHash<QString, QString> m_targetAlias;
 
-        QVector<Test> m_testSuites;
+//        QVector<Test> m_testSuites;
 };
 
 #endif

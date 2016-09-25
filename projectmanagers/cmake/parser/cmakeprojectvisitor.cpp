@@ -66,7 +66,6 @@ CMakeProjectVisitor::CMakeProjectVisitor(const QString& root, ReferencedTopDUCon
 : m_projectData(projectData), m_root(root), m_vars(0), m_macros(0), m_cache(0)
 , m_topctx(0), m_parentCtx(parent), m_hitBreak(false), m_hitReturn(false)
 {
-    projectData.subdirectories.clear();
 }
 
 QStringList CMakeProjectVisitor::envVarDirectories(const QString &varName) const
@@ -302,7 +301,7 @@ int CMakeProjectVisitor::visit( const AddTestAst * test)
     }
 
     kDebug(9042) << "AddTestAst" << t.executable;
-    m_testSuites << t;
+    m_projectData.testSuites.push_back(t);
     return 1;
 }
 
@@ -2130,13 +2129,13 @@ int CMakeProjectVisitor::visit(const CustomTargetAst *ctar)
 int CMakeProjectVisitor::visit(const AddDefinitionsAst *addDef)
 {
 //     kDebug(9042) << "Adding defs: " << addDef->definitions();
-    CMakeParserUtils::addDefinitions(addDef->definitions(), &m_defs, true);
+    CMakeParserUtils::addDefinitions(addDef->definitions(), &m_projectData.definitions, true);
     return 1;
 }
 
 int CMakeProjectVisitor::visit(const RemoveDefinitionsAst *remDef)
 {
-    CMakeParserUtils::removeDefinitions(remDef->definitions(), &m_defs, true);
+    CMakeParserUtils::removeDefinitions(remDef->definitions(), &m_projectData.definitions, true);
     return 1;
 }
 
@@ -2249,8 +2248,8 @@ int CMakeProjectVisitor::visit(const SetTestsPropsAst* stp)
         props.insert(property.first, property.second);
     }
 
-    for(QVector<Test>::iterator it=m_testSuites.begin(), itEnd=m_testSuites.end(); it!=itEnd; ++it) {
-        it->properties = props;
+    for(Test& test : m_projectData.testSuites) {
+        test.properties = props;
     }
     return 1;
 }
