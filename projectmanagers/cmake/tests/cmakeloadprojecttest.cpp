@@ -176,12 +176,12 @@ CMakeProjectData CMakeLoadProjectTest::parseProject( const QString& sourcedir )
     data.vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList(sourcedir));
     data.vm.insert("KDE4_BUILD_TESTS", QStringList("True"));
 
-    CMakeProjectVisitor v(projectfile, ref);
+    CMakeProjectVisitor v(projectfile, ref, data);
     v.setVariableMap(&data.vm);
     v.setMacroMap(&data.mm);
     v.setCacheValues(&data.cache);
     v.setModulePath(modulesPath);
-    v.setProperties(data.properties);
+//    v.setProperties(data.properties);
     QMap<QString, QString> env;
     env["CMAKE_PREFIX_PATH"] = QString::fromLatin1(TEST_ENV_PREFIX_PATH);
     env["CMAKE_INCLUDE_PATH"] = QString::fromLatin1(TEST_ENV_INCLUDE_PATH);
@@ -190,9 +190,9 @@ CMakeProjectData CMakeLoadProjectTest::parseProject( const QString& sourcedir )
     v.walk(code, 0);
     
     data.projectName=v.projectName();
-    data.subdirectories=v.subdirectories();
+//    data.subdirectories=v.subdirectories();
     data.targets=v.targets();
-    data.properties=v.properties();
+//    data.properties=v.properties();
     data.testSuites=v.testSuites();
     
     //printSubdirectories(data->subdirectories);

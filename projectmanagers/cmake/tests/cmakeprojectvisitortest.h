@@ -26,9 +26,10 @@
 #include <language/duchain/topducontext.h>
 #include "cmakelistsparser.h"
 #include "cmakeprojectvisitor.h"
+#include <cmakeprojectdata.h>
 
 
-class CMakeProjectVisitorTest : public QObject, public CMakeProjectVisitor
+class CMakeProjectVisitorTest : public QObject, private CMakeProjectData, public CMakeProjectVisitor
 {
     Q_OBJECT
 public:

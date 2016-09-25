@@ -30,6 +30,7 @@
 #include "cmaketypes.h"
 #include <language/duchain/topducontext.h>
 
+class CMakeProjectData;
 class CMakeFunctionDesc;
 
 namespace KDevelop
@@ -44,7 +45,8 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
     public:
         typedef void (*message_callback)(const QString& message);
         
-        explicit CMakeProjectVisitor(const QString& root, KDevelop::ReferencedTopDUContext parent);
+        explicit CMakeProjectVisitor(const QString& root, KDevelop::ReferencedTopDUContext parent,
+                                     CMakeProjectData& projectData);
         virtual ~CMakeProjectVisitor() {}
         
         virtual int visit( const CustomCommandAst * );
@@ -109,13 +111,13 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
 
         const VariableMap* variables() const { return m_vars; }
         const CacheValues* cache() const { return m_cache; }
-        CMakeDefinitions definitions() const { return m_defs; }
+        const CMakeDefinitions& definitions() const { return m_defs; }
         
-        QString projectName() const { return m_projectName; }
-        QVector<Subdirectory> subdirectories() const { return m_subdirectories; }
+        const QString& projectName() const { return m_projectName; }
+//        const QVector<Subdirectory>& subdirectories() const { return m_subdirectories; }
         QVector<Target> targets() const { return m_targetForId.values().toVector(); }
         QStringList resolveDependencies(const QStringList& target) const;
-        QVector<Test> testSuites() const { return m_testSuites; }
+        const QVector<Test>& testSuites() const { return m_testSuites; }
             
         int walk(const CMakeFileContent& fc, int line, bool isClean=false);
         
@@ -137,12 +139,12 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
             int line;
             KDevelop::ReferencedTopDUContext context;
         };
-        const CMakeProperties& properties() { return m_props; }
+//        const CMakeProperties& properties() { return m_props; }
         
         static void setMessageCallback(message_callback f) { s_msgcallback=f; }
         
         QStringList variableValue(const QString& var) const;
-        void setProperties(const CMakeProperties& properties) { m_props = properties; }
+//        void setProperties(const CMakeProperties& properties) { m_props = properties; }
         QHash<QString, QString> targetAlias() { return m_targetAlias; }
         
     protected:
@@ -186,10 +188,11 @@ class KDEVCMAKECOMMON_EXPORT CMakeProjectVisitor : CMakeAstVisitor
         QStringList traverseGlob(const QString& startPath, const QString& expression,
             bool recursive = false, bool followSymlinks = false);
         
-        CMakeProperties m_props;
+        CMakeProjectData& m_projectData;
+//        CMakeProperties m_props;
         QStringList m_modulePath;
         QString m_projectName;
-        QVector<Subdirectory> m_subdirectories;
+//        QVector<Subdirectory>& m_subdirectories;
         QHash<QString, QStringList> m_generatedFiles;
         QHash<QString, Target> m_targetForId;
         

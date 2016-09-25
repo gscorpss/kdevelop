@@ -118,7 +118,7 @@ CMakeProjectVisitor CMakeCompliance::parseFile( const QString& sourcefile )
     data.vm.insert("CMAKE_CURRENT_LIST_FILE", QStringList(projectfile));
     data.vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList(sourcedir));
 
-    CMakeProjectVisitor v(projectfile, ref);
+    CMakeProjectVisitor v(projectfile, ref, data);
     v.setVariableMap(&data.vm);
     v.setMacroMap(&data.mm);
     v.setCacheValues(&data.cache);

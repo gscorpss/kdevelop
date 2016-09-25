@@ -182,20 +182,20 @@ namespace CMakeParserUtils
         data->vm.insertGlobal("CMAKE_CURRENT_BINARY_DIR", QStringList(binaryPath(sourcedir, projectSourceDir, projectBinDir)));
         data->vm.insertGlobal("CMAKE_CURRENT_SOURCE_DIR", QStringList(sourcedir));
         
-        CMakeProjectVisitor v(file, parent);
+        CMakeProjectVisitor v(file, parent, *data);
         v.setCacheValues(&data->cache);
         v.setVariableMap(&data->vm);
         v.setMacroMap(&data->mm);
         v.setModulePath(data->modulePath);
         v.setEnvironmentProfile(env);
-        v.setProperties(data->properties);
+//        v.setProperties(data->properties);
         v.setDefinitions(data->definitions);
         v.walk(f, 0, true);
         
         data->projectName=v.projectName();
-        data->subdirectories=v.subdirectories();
+//        data->subdirectories=v.subdirectories();
         data->targets=v.targets();
-        data->properties=v.properties();
+//        data->properties=v.properties();
         data->testSuites=v.testSuites();
         data->targetAlias=v.targetAlias();
         data->definitions=v.definitions();

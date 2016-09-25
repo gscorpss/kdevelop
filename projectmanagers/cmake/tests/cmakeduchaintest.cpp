@@ -20,6 +20,7 @@
 
 #include "cmakeduchaintest.h"
 #include "cmakeprojectvisitor.h"
+#include <cmakeprojectdata.h>
 
 #include <language/duchain/identifier.h>
 #include <language/duchain/declaration.h>
@@ -109,7 +110,8 @@ void CMakeDUChainTest::testDUChainWalk()
     CacheValues cv;
     vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList("."));
 
-    CMakeProjectVisitor v(file.fileName(), m_fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file.fileName(), m_fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues(&cv);
@@ -245,7 +247,8 @@ void CMakeDUChainTest::testUses()
     CacheValues cv;
     vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList("."));
 
-    CMakeProjectVisitor v(file.fileName(), m_fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file.fileName(), m_fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues(&cv);

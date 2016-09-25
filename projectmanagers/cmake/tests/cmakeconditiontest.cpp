@@ -20,6 +20,7 @@
 
 #include "cmakeconditiontest.h"
 #include "cmakecondition.h"
+#include <cmakeprojectdata.h>
 #include <QStringList>
 
 QTEST_MAIN( CMakeConditionTest )
@@ -58,8 +59,8 @@ void CMakeConditionTest::testGoodParse()
 {
     QFETCH( QStringList, expression );
     QFETCH( bool, result );
-    
-    CMakeProjectVisitor v(QString(), 0);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(QString(), 0, pdata);
     v.setVariableMap( &m_vars );
     v.setMacroMap( &m_macros );
     v.setCacheValues( &m_cache );
@@ -160,8 +161,8 @@ void CMakeConditionTest::testGoodParse_data()
 void CMakeConditionTest::testBadParse()
 {
     QFETCH( QStringList, expression );
-    
-    CMakeProjectVisitor v(QString(), 0);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(QString(), 0, pdata);
     v.setVariableMap( &m_vars );
     v.setMacroMap( &m_macros );
     v.setCacheValues( &m_cache );

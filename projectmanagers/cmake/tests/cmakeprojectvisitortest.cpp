@@ -58,7 +58,7 @@ static QSharedPointer<KTemporaryFile> prepareVisitoTestScript(const QString &scr
 }
 
 CMakeProjectVisitorTest::CMakeProjectVisitorTest()
- : CMakeProjectVisitor( QString(), 0)
+ : CMakeProjectVisitor( QString(), 0, *this)
 {
 }
 
@@ -545,7 +545,8 @@ void CMakeProjectVisitorTest::testRun()
     vm.insert("CMAKE_SOURCE_DIR", QStringList("./"));
     vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList("./"));
 
-    CMakeProjectVisitor v(file->fileName(), fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file->fileName(), fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues( &val );
@@ -617,7 +618,8 @@ void CMakeProjectVisitorTest::testFinder()
     }
     
     data.vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList("./"));
-    CMakeProjectVisitor v(file->fileName(), fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file->fileName(), fakeContext, pdata);
     v.setVariableMap(&data.vm);
     v.setMacroMap(&data.mm);
     v.setCacheValues( &data.cache );
@@ -629,7 +631,7 @@ void CMakeProjectVisitorTest::testFinder()
     v.setEnvironmentProfile( env );
     CMakeProperties props;
     props[GlobalProperty][QString()]["FIND_LIBRARY_USE_LIB64_PATHS"] = QStringList() << "TRUE";
-    v.setProperties( props );
+    pdata.properties = props;
     v.walk(code, 0);
     
     QString foundvar=QString("%1_FOUND").arg(module);
@@ -859,7 +861,8 @@ void CMakeProjectVisitorTest::testGlobs()
 
     vm.insert("CMAKE_CURRENT_SOURCE_DIR", QStringList(dir.name()));
 
-    CMakeProjectVisitor v(file->fileName(), fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file->fileName(), fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues( &val );
@@ -903,7 +906,8 @@ void CMakeProjectVisitorTest::testForeachLines()
     ast->parseFunctionInfo(foreachDesc);
 
     VariableMap vm;
-    CMakeProjectVisitor v("somefile", ReferencedTopDUContext());
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v("somefile", ReferencedTopDUContext(), pdata);
     v.setVariableMap(&vm);
 
     QCOMPARE(v.visit(ast), 3);
@@ -987,14 +991,15 @@ void CMakeProjectVisitorTest::testTargetProperties()
     vm.insert("CMAKE_LIBRARY_PREFIX", QStringList("lib"));
     vm.insert("CMAKE_LIBRARY_SUFFIX", QStringList(".so"));
 
-    CMakeProjectVisitor v(file->fileName(), fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file->fileName(), fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues(&val);
     v.walk(code, 0);
 
     foreach(const StringPair& vp, results)
-        QCOMPARE(v.properties()[TargetProperty][target][vp.first].join(QString(";")), vp.second);
+        QCOMPARE(pdata.properties[TargetProperty][target][vp.first].join(QString(";")), vp.second);
 }
 
 void CMakeProjectVisitorTest::testBug335803_data()
@@ -1064,7 +1069,8 @@ void CMakeProjectVisitorTest::testBug335803()
     VariableMap vm;
     CacheValues val;
 
-    CMakeProjectVisitor v(file->fileName(), fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file->fileName(), fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues(&val);
@@ -1116,14 +1122,15 @@ void CMakeProjectVisitorTest::testSetProperty()
     VariableMap vm;
     CacheValues val;
 
-    CMakeProjectVisitor v(file->fileName(), fakeContext);
+    CMakeProjectData pdata;
+    CMakeProjectVisitor v(file->fileName(), fakeContext, pdata);
     v.setVariableMap(&vm);
     v.setMacroMap(&mm);
     v.setCacheValues(&val);
     v.walk(code, 0);
 
-    QVERIFY(v.properties().contains(type));
-    QVERIFY(v.properties().value(type).contains(category));
-    QVERIFY(v.properties().value(type).value(category).contains(name));
-    QCOMPARE(v.properties().value(type).value(category).value(name), value);
+    QVERIFY(pdata.properties.contains(type));
+    QVERIFY(pdata.properties.value(type).contains(category));
+    QVERIFY(pdata.properties.value(type).value(category).contains(name));
+    QCOMPARE(pdata.properties.value(type).value(category).value(name), value);
 }

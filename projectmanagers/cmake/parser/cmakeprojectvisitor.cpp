@@ -24,6 +24,7 @@
 #include "astfactory.h"
 #include "cmakeduchaintypes.h"
 #include "cmakeparserutils.h"
+#include <cmakeprojectdata.h>
 
 #include <language/editor/simplerange.h>
 #include <language/duchain/topducontext.h>
@@ -60,10 +61,12 @@ static bool isGenerated(const QString& name)
 
 CMakeProjectVisitor::message_callback CMakeProjectVisitor::s_msgcallback=debugMsgs;
 
-CMakeProjectVisitor::CMakeProjectVisitor(const QString& root, ReferencedTopDUContext parent)
-    : m_root(root), m_vars(0), m_macros(0), m_cache(0)
-    , m_topctx(0), m_parentCtx(parent), m_hitBreak(false), m_hitReturn(false)
+CMakeProjectVisitor::CMakeProjectVisitor(const QString& root, ReferencedTopDUContext parent,
+                                         CMakeProjectData& projectData)
+: m_projectData(projectData), m_root(root), m_vars(0), m_macros(0), m_cache(0)
+, m_topctx(0), m_parentCtx(parent), m_hitBreak(false), m_hitReturn(false)
 {
+    projectData.subdirectories.clear();
 }
 
 QStringList CMakeProjectVisitor::envVarDirectories(const QString &varName) const
@@ -324,7 +327,7 @@ int CMakeProjectVisitor::visit( const SetTargetPropsAst * targetProps)
         QString tname = m_targetAlias.value(_tname, _tname);
         foreach(const SetTargetPropsAst::PropPair& t, targetProps->properties())
         {
-            m_props[TargetProperty][tname][t.first] = t.second.split(';');
+            m_projectData.properties[TargetProperty][tname][t.first] = t.second.split(';');
         }
     }
     return 1;
@@ -334,7 +337,7 @@ int CMakeProjectVisitor::visit( const SetDirectoryPropsAst * dirProps)
 {   
     QString dir=m_vars->value("CMAKE_CURRENT_SOURCE_DIR").join(QString());
     kDebug(9042) << "setting directory props for " << dirProps->properties() << dir;
-    QMap<QString, QStringList>& dprops = m_props[DirectoryProperty][dir];
+    QMap<QString, QStringList>& dprops = m_projectData.properties[DirectoryProperty][dir];
     foreach(const SetDirectoryPropsAst::PropPair& t, dirProps->properties())
     {
         dprops[t.first] = t.second.split(';');
@@ -348,7 +351,7 @@ int CMakeProjectVisitor::visit( const GetTargetPropAst * prop)
     kDebug(9042) << "getting target " << targetName << " prop " << prop->property() << prop->variableName();
     QStringList value;
     
-    CategoryType& category = m_props[TargetProperty];
+    CategoryType& category = m_projectData.properties[TargetProperty];
     CategoryType::iterator itTarget = category.find(m_targetAlias.value(targetName, targetName));
     if(itTarget!=category.end()) {
         QMap<QString, QStringList>& targetProps = itTarget.value();
@@ -377,7 +380,7 @@ int CMakeProjectVisitor::visit(const AddSubdirectoryAst *subd)
     d.build_dir=subd->binaryDir().isEmpty() ? d.name : subd->binaryDir();
     d.desc=p.code->at(p.line);
     
-    m_subdirectories += d;
+    m_projectData.subdirectories.push_back(d);
     return 1;
 }
 
@@ -393,7 +396,7 @@ int CMakeProjectVisitor::visit(const SubdirsAst *sdirs)
         d.build_dir=dir;
         d.desc=desc;
         
-        m_subdirectories += d;
+        m_projectData.subdirectories.push_back(d);
     }
     return 1;
 }
@@ -446,7 +449,7 @@ void CMakeProjectVisitor::defineTarget(const QString& _id, const QStringList& so
         d->setAbstractType(targetType);
     }
 
-    QMap<QString, QStringList>& targetProps = m_props[TargetProperty][id];
+    QMap<QString, QStringList>& targetProps = m_projectData.properties[TargetProperty][id];
     QString exe=id, locationDir;
     switch(t) {
         case Target::Executable: {
@@ -555,7 +558,7 @@ int CMakeProjectVisitor::visit(const IncludeDirectoriesAst * dirs)
     }
 
     QString dir = m_vars->value("CMAKE_CURRENT_SOURCE_DIR").join(QString());
-    QStringList& v = m_props[DirectoryProperty][dir]["INCLUDE_DIRECTORIES"];
+    QStringList& v = m_projectData.properties[DirectoryProperty][dir]["INCLUDE_DIRECTORIES"];
     if(t==IncludeDirectoriesAst::After)
         v += toInclude;
     else {
@@ -700,7 +703,7 @@ int CMakeProjectVisitor::visit(const FindPackageAst *pack)
         }
     }
 
-    const bool useLib64 = m_props[GlobalProperty][QString()]["FIND_LIBRARY_USE_LIB64_PATHS"].contains("TRUE");
+    const bool useLib64 = m_projectData.properties[GlobalProperty][QString()]["FIND_LIBRARY_USE_LIB64_PATHS"].contains("TRUE");
     QSet<QString> handled;
     foreach(const QString& lookup, lookupPaths)
     {
@@ -1130,7 +1133,7 @@ int CMakeProjectVisitor::visit(const TargetLinkLibrariesAst *tll)
     QHash<QString, Target>::iterator target = m_targetForId.find(tll->target());
     //TODO: we can add a problem if the target is not found
     if(target != m_targetForId.end()) {
-        CategoryType& targetProps = m_props[TargetProperty];
+        CategoryType& targetProps = m_projectData.properties[TargetProperty];
         CategoryType::iterator it = targetProps.find(m_targetAlias.value(tll->target(), tll->target()));
 
         (*it)["INTERFACE_LINK_LIBRARIES"] += tll->interfaceOnlyDependencies().retrieveTargets()
@@ -1142,7 +1145,7 @@ int CMakeProjectVisitor::visit(const TargetLinkLibrariesAst *tll)
 
 int CMakeProjectVisitor::visit(const TargetIncludeDirectoriesAst* tid)
 {
-    CategoryType& targetProps = m_props[TargetProperty];
+    CategoryType& targetProps = m_projectData.properties[TargetProperty];
     CategoryType::iterator it = targetProps.find(m_targetAlias.value(tid->target(), tid->target()));
     //TODO: we can add a problem if the target is not found
     if(it != targetProps.end()) {
@@ -2172,7 +2175,7 @@ int CMakeProjectVisitor::visit(const SetPropertyAst* setp)
     }
     kDebug() << "setprops" << setp->type() << args << setp->name() << setp->values();
     
-    CategoryType& cm=m_props[setp->type()];
+    CategoryType& cm=m_projectData.properties[setp->type()];
     if(setp->append()) {
         foreach(const QString &it, args) {
             cm[it][setp->name()].append(setp->values());
@@ -2213,7 +2216,7 @@ int CMakeProjectVisitor::visit(const GetPropertyAst* getp)
                 catn = getp->typeName();
                 break;
         }
-        retv = m_props[getp->type()][catn][getp->name()];
+        retv = m_projectData.properties[getp->type()][catn][getp->name()];
     }
     m_vars->insert(getp->outputVariable(), retv);
     kDebug() << "getprops" << getp->type() << getp->name() << getp->typeName() << getp->outputVariable() << "=" << retv;
@@ -2233,7 +2236,7 @@ int CMakeProjectVisitor::visit(const GetDirPropertyAst* getdp)
         dir=u.path();
     }
     
-    retv=m_props[DirectoryProperty][dir][getdp->propName()];
+    retv=m_projectData.properties[DirectoryProperty][dir][getdp->propName()];
     m_vars->insert(getdp->outputVariable(), retv);
     
     return 1;
